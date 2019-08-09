@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import * as d3 from 'd3';
 import axios from 'axios';
+import DisplayMap from '../components/DisplayMap';
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			svgHeight: 800,
-			svgWidth: 1000,
+			height: 800,
+			width: 1000,
 			mapData: [],
 		};
 	}
@@ -16,7 +16,7 @@ class App extends Component {
 		axios
 			.get('static/statesmap.json')
 			.then(res => {
-				this.setState({ mapData: res.data });
+				this.setState({ mapData: res.data.features });
 			})
 			.catch(err => {
 				console.log(err);
@@ -24,8 +24,13 @@ class App extends Component {
 	}
 
 	render() {
-		const { svgHeight, svgWidth, mapData } = this.state;
-		return <div>Interactive Map</div>;
+		const { height, width, mapData } = this.state;
+
+		return (
+			<div>
+				<DisplayMap coords={mapData} svgHeight={height} svgWidth={width} />
+			</div>
+		);
 	}
 }
 
