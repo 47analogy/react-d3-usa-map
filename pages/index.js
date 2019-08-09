@@ -9,6 +9,7 @@ class App extends Component {
 			height: 800,
 			width: 1000,
 			mapData: [],
+			usStateInfo: [],
 		};
 	}
 
@@ -23,12 +24,24 @@ class App extends Component {
 			});
 	}
 
+	// get info for individual state
+	handleMapClick = usState => {
+		this.setState({
+			usStateInfo: [usState],
+		});
+	};
+
 	render() {
-		const { height, width, mapData } = this.state;
+		const { height, width, mapData, usStateInfo } = this.state;
 
 		return (
 			<div>
-				<DisplayMap coords={mapData} svgHeight={height} svgWidth={width} />
+				<DisplayMap
+					coords={mapData}
+					svgHeight={height}
+					svgWidth={width}
+					stateClick={this.handleMapClick}
+				/>
 			</div>
 		);
 	}
