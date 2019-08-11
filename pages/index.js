@@ -33,7 +33,6 @@ class App extends Component {
 
 	render() {
 		const { height, width, mapData, usStateInfo } = this.state;
-
 		return (
 			<div>
 				<DisplayMap
@@ -41,6 +40,7 @@ class App extends Component {
 					svgHeight={height}
 					svgWidth={width}
 					stateClick={this.handleMapClick}
+					stateCoords={usStateInfo}
 				/>
 			</div>
 		);

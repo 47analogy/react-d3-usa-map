@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 const DisplayMap = props => {
-	const { coords, svgHeight, svgWidth, stateClick } = props;
+	const { coords, svgHeight, svgWidth, stateClick, stateCoords } = props;
 
 	const projection = () => {
 		return d3.geoAlbersUsa();
@@ -18,6 +18,17 @@ const DisplayMap = props => {
 							d={d3.geoPath().projection(projection())(d)}
 							className="state"
 							fill={'#D3D3D3'}
+							stroke={'#000000'}
+						/>
+					))}
+				</g>
+				<g className="states">
+					{stateCoords.map((d, i) => (
+						<path
+							key={`state-path-${i}`}
+							d={d3.geoPath().projection(projection())(d)}
+							className="state"
+							fill={'#800080'}
 							stroke={'#000000'}
 						/>
 					))}
