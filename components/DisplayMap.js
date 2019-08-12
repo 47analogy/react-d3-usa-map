@@ -1,11 +1,37 @@
 import * as d3 from 'd3';
 
 const DisplayMap = props => {
-	const { coords, svgHeight, svgWidth, stateClick, stateCoords } = props;
+	const {
+		coords,
+		svgHeight,
+		svgWidth,
+		stateClick,
+		stateCoords,
+		// updateVote,
+	} = props;
 
 	const projection = () => {
 		return d3.geoAlbersUsa();
 	};
+
+	const updateMapColor = () => {
+		const color = ['#D3D3D3', 'red', 'blue'];
+		let shade = '';
+
+		coords.map(y => {
+			const pick = y.properties.winner;
+			if (pick === 0) {
+				shade = color[1]; // red
+			} else if (pick === 1) {
+				shade = color[2]; // blue
+			} else {
+				shade = color[0]; // grey
+			}
+		});
+		return shade;
+	};
+
+	updateMapColor();
 
 	return (
 		<div>
@@ -17,7 +43,8 @@ const DisplayMap = props => {
 							onClick={() => stateClick(d)}
 							d={d3.geoPath().projection(projection())(d)}
 							className="state"
-							fill={'#D3D3D3'}
+							// fill={'#D3D3D3'}
+							fill={updateMapColor()}
 							stroke={'#000000'}
 						/>
 					))}
@@ -28,7 +55,7 @@ const DisplayMap = props => {
 							key={`state-path-${i}`}
 							d={d3.geoPath().projection(projection())(d)}
 							className="state"
-							fill={'#800080'}
+							fill={updateMapColor()}
 							stroke={'#000000'}
 						/>
 					))}
