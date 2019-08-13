@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import * as d3 from 'd3';
 import DisplayMap from '../components/DisplayMap';
-//import RandomVote from '../components/RandomVote'; // REMOVE
 
 class App extends Component {
 	constructor(props) {
@@ -20,10 +19,6 @@ class App extends Component {
 		this.loadData();
 	}
 
-	// componentDidUpdate() {
-	// 	this.updateVote();
-	// }
-
 	loadData = () => {
 		axios
 			.all([d3.json('static/statesmap.json'), d3.csv('static/votes.csv')])
@@ -40,19 +35,31 @@ class App extends Component {
 			});
 	};
 
-	// get info for individual state
-	handleMapClick = usState => {
+	// toggle votes for individual state
+	toggleMapClick = usState => {
+		const newElectionResults = this.state.mapData;
+
+		newElectionResults.map(state => {
+			if (state === usState) {
+				if (usState.properties['winner'] === 1) {
+					usState.properties['winner'] = 0;
+				} else {
+					usState.properties['winner'] = 1;
+				}
+				return newElectionResults;
+			}
+		});
 		this.setState({
-			usStateInfo: [usState],
+			mapData: newElectionResults,
 		});
 	};
 
 	randomNum = () => {
-		const vote = Math.floor(Math.random() * 3);
+		const vote = Math.floor(Math.random() * 2);
 		return vote;
 	};
 
-	// give each state a random number and update JSON
+	// give each state a random number for winner and update JSON file
 	updateVote = () => {
 		let newMapData = this.state.mapData;
 
@@ -79,9 +86,7 @@ class App extends Component {
 
 		this.setState({
 			mapData: newMapData,
-			// usStateInfo: this.state.mapData,
 		});
-		// console.log('new map data', this.state.mapData);
 	};
 
 	render() {
@@ -93,9 +98,8 @@ class App extends Component {
 						coords={mapData}
 						svgHeight={height}
 						svgWidth={width}
-						stateClick={this.handleMapClick}
+						toggleMapClick={this.toggleMapClick}
 						stateCoords={usStateInfo}
-						// updateVote={this.updateVote}
 					/>
 				</div>
 				<div>
