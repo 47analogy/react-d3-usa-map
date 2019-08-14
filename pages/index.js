@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import * as d3 from 'd3';
 import DisplayMap from '../components/DisplayMap';
+import VoteResults from '../components/VoteResults';
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			height: 800,
+			height: 550,
 			width: 1000,
 			mapData: [],
-			usStateInfo: [],
 			voteData: [],
-			cand1Vote: 0,
-			cand2Vote: 0,
+			candiateOneVote: 0,
+			candiateTwoVote: 0,
 		}; // mucho estado...que el redux?
 	}
 
@@ -45,14 +45,15 @@ class App extends Component {
 			if (state === usState) {
 				if (usState.properties['WINNER'] === 1) {
 					usState.properties['WINNER'] = 0;
-					//UPDATE VOTES
+					this.candidateVotes();
 				} else {
 					usState.properties['WINNER'] = 1;
-					//UPDATE VOTES
+					this.candidateVotes();
 				}
 				return newElectionResults;
 			}
 		});
+
 		this.setState({
 			mapData: newElectionResults,
 		});
@@ -81,10 +82,42 @@ class App extends Component {
 		this.setState({
 			mapData: newMapData,
 		});
+
+		this.candidateVotes(); // will this have most recent data?
+	};
+
+	candidateVotes = () => {
+		// totalVotesAvailable = 538
+		// totalVotesWinner = 270
+
+		let candiateOneSum = this.state.mapData
+			.filter(allVotes => allVotes.properties['WINNER'] === 0)
+			.reduce((sum, allVotes) => {
+				return sum + parseInt(allVotes.properties.ELECTORALVOTES);
+			}, 0);
+
+		let candiateTwoSum = this.state.mapData
+			.filter(allVotes => allVotes.properties['WINNER'] === 1)
+			.reduce((sum, allVotes) => {
+				return sum + parseInt(allVotes.properties.ELECTORALVOTES);
+			}, 0);
+
+		this.setState({
+			candiateOneVote: candiateOneSum,
+			candiateTwoVote: candiateTwoSum,
+		});
 	};
 
 	render() {
-		const { height, width, mapData, usStateInfo } = this.state;
+		const {
+			height,
+			width,
+			mapData,
+			usStateInfo,
+			candiateOneVote,
+			candiateTwoVote,
+		} = this.state;
+
 		return (
 			<div>
 				<div>
@@ -99,6 +132,7 @@ class App extends Component {
 				<div>
 					<button onClick={this.updateVote}>Simulator</button>
 				</div>
+				<VoteResults blue={candiateOneVote} red={candiateTwoVote} />
 			</div>
 		);
 	}
