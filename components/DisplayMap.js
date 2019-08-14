@@ -1,13 +1,7 @@
 import * as d3 from 'd3';
 
 const DisplayMap = props => {
-	const {
-		coords,
-		svgHeight,
-		svgWidth,
-		toggleMapClick,
-		// updateVote,
-	} = props;
+	const { coords, svgHeight, svgWidth, toggleMapClick } = props;
 
 	const projection = () => {
 		return d3.geoAlbersUsa();
@@ -23,7 +17,7 @@ const DisplayMap = props => {
 							onClick={() => toggleMapClick(d)}
 							d={d3.geoPath().projection(projection())(d)}
 							className='state'
-							fill={d.properties.winner === 0 ? '#FF5252' : '#2096F3'}
+							fill={d.properties.WINNER === 1 ? '#FF5252' : '#2096F3'}
 							stroke={'#000000'}
 						/>
 					))}

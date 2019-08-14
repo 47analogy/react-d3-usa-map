@@ -12,7 +12,9 @@ class App extends Component {
 			mapData: [],
 			usStateInfo: [],
 			voteData: [],
-		};
+			cand1Vote: 0,
+			cand2Vote: 0,
+		}; // mucho estado...que el redux?
 	}
 
 	componentDidMount() {
@@ -35,16 +37,18 @@ class App extends Component {
 			});
 	};
 
-	// toggle votes for individual state
+	// toggle votes for individual US State
 	toggleMapClick = usState => {
 		const newElectionResults = this.state.mapData;
 
 		newElectionResults.map(state => {
 			if (state === usState) {
-				if (usState.properties['winner'] === 1) {
-					usState.properties['winner'] = 0;
+				if (usState.properties['WINNER'] === 1) {
+					usState.properties['WINNER'] = 0;
+					//UPDATE VOTES
 				} else {
-					usState.properties['winner'] = 1;
+					usState.properties['WINNER'] = 1;
+					//UPDATE VOTES
 				}
 				return newElectionResults;
 			}
@@ -59,28 +63,18 @@ class App extends Component {
 		return vote;
 	};
 
-	// give each state a random number for winner and update JSON file
+	// give each US State electoral votes
+	// and a random number to indicate winner
 	updateVote = () => {
 		let newMapData = this.state.mapData;
 
-		let stateVote = this.state.voteData.map(x => {
-			const dataVotes = x.state;
-			return dataVotes;
-		});
-
-		let stateTally = this.state.mapData.map(y => {
-			const dataState = y.properties.NAME;
-			return dataState;
-		});
-
-		stateVote.map(vote =>
-			stateTally.map(state => {
-				if (vote === state) {
-					newMapData.map(victor => {
-						victor.properties['winner'] = this.randomNum();
-					});
-					return newMapData;
+		newMapData.map(state =>
+			this.state.voteData.map(vote => {
+				if (vote.state === state.properties.NAME) {
+					state.properties['ELECTORALVOTES'] = vote.electoralvotes;
+					state.properties['WINNER'] = this.randomNum();
 				}
+				return newMapData;
 			})
 		);
 
@@ -90,7 +84,7 @@ class App extends Component {
 	};
 
 	render() {
-		const { height, width, mapData, usStateInfo, voteData } = this.state;
+		const { height, width, mapData, usStateInfo } = this.state;
 		return (
 			<div>
 				<div>
