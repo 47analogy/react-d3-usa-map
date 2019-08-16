@@ -18,11 +18,11 @@ const DisplayMap = props => {
 							d={d3.geoPath().projection(projection())(d)}
 							className="state"
 							fill={
-								!d.properties.WINNER
-									? '#F4CB43'
-									: d.properties.WINNER === 1
-									? '#EB4C50'
-									: '#1A9AF2'
+								!d.properties.WINNER || d.properties.WINNER === 'undecided'
+									? '#F4CB43' // gold
+									: d.properties.WINNER === 'redState'
+									? '#EB4C50' // red
+									: '#1A9AF2' // blue
 							}
 							stroke={'#000000'}
 						/>

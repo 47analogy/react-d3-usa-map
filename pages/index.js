@@ -12,8 +12,9 @@ class App extends Component {
 			width: 1000,
 			mapData: [],
 			voteData: [],
-			candiateOneVote: 0,
-			candiateTwoVote: 0,
+			candidateOneVotes: 0,
+			candidateTwoVotes: 0,
+			battleGround: 0,
 		}; // mucho estado...que el redux?
 	}
 
@@ -41,12 +42,13 @@ class App extends Component {
 	toggleMapVotes = usState => {
 		const newElectionResults = [...this.state.mapData];
 
+		// TODO: FUNCTIONALITY FOR UNDECIDED VOTES
 		newElectionResults.map(state => {
 			if (state === usState) {
-				if (usState.properties['WINNER'] === 1) {
-					usState.properties['WINNER'] = 0;
+				if (usState.properties['WINNER'] === 'redState') {
+					usState.properties['WINNER'] = 'blueState';
 				} else {
-					usState.properties['WINNER'] = 1;
+					usState.properties['WINNER'] = 'redState';
 				}
 				return newElectionResults;
 			}
@@ -61,21 +63,28 @@ class App extends Component {
 	};
 
 	// simple way to generate winner of a US State
-	randomNum = () => {
-		const vote = Math.floor(Math.random() * 2);
-		return vote;
+	generateRandomVotes = () => {
+		// match US State colors to a generated number
+		const stateColors = {
+			0: 'undecided',
+			1: 'redState',
+			2: 'blueState',
+		};
+
+		const vote = Math.floor(Math.random() * 3);
+		return stateColors[vote];
 	};
 
 	// give each US State electoral votes
 	// and a random number to indicate winner
 	generateRandomMap = () => {
-		let newMapData = [...this.state.mapData];
+		const newMapData = [...this.state.mapData];
 
 		newMapData.map(state =>
 			this.state.voteData.map(vote => {
 				if (vote.state === state.properties.NAME) {
 					state.properties['ELECTORALVOTES'] = vote.electoralvotes;
-					state.properties['WINNER'] = this.randomNum();
+					state.properties['WINNER'] = this.generateRandomVotes();
 				}
 				return newMapData;
 			})
@@ -90,23 +99,38 @@ class App extends Component {
 	};
 
 	tallyCandidateVotes = () => {
-		// totalVotesAvailable = 538, totalVotesWinner = 270
+		const totalVotesWinner = 270;
 
-		let candiateOneSum = this.state.mapData
-			.filter(allVotes => allVotes.properties['WINNER'] === 0)
+		const candiateOneSum = this.state.mapData
+			.filter(allVotes => allVotes.properties['WINNER'] === 'blueState')
 			.reduce((sum, allVotes) => {
 				return sum + parseInt(allVotes.properties.ELECTORALVOTES);
 			}, 0);
 
-		let candiateTwoSum = this.state.mapData
-			.filter(allVotes => allVotes.properties['WINNER'] === 1)
+		const candiateTwoSum = this.state.mapData
+			.filter(allVotes => allVotes.properties['WINNER'] === 'redState')
 			.reduce((sum, allVotes) => {
 				return sum + parseInt(allVotes.properties.ELECTORALVOTES);
 			}, 0);
+
+		this.setState(
+			{
+				candidateOneVotes: candiateOneSum,
+				candidateTwoVotes: candiateTwoSum,
+			},
+			this.tallyUndecidedVotes
+		);
+	};
+
+	tallyUndecidedVotes = () => {
+		const totalVotesAvailable = 538;
+
+		const undecidedVotes =
+			totalVotesAvailable -
+			(this.state.candidateOneVotes + this.state.candidateTwoVotes);
 
 		this.setState({
-			candiateOneVote: candiateOneSum,
-			candiateTwoVote: candiateTwoSum,
+			battleGround: undecidedVotes,
 		});
 	};
 
@@ -116,8 +140,9 @@ class App extends Component {
 			width,
 			mapData,
 			usStateInfo,
-			candiateOneVote,
-			candiateTwoVote,
+			candidateOneVotes,
+			candidateTwoVotes,
+			battleGround,
 		} = this.state;
 
 		return (
@@ -134,7 +159,11 @@ class App extends Component {
 				<div>
 					<button onClick={this.generateRandomMap}>Simulator</button>
 				</div>
-				<VoteResults blue={candiateOneVote} red={candiateTwoVote} />
+				<VoteResults
+					blue={candidateOneVotes}
+					red={candidateTwoVotes}
+					undecided={battleGround}
+				/>
 			</div>
 		);
 	}
