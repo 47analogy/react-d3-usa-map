@@ -38,27 +38,29 @@ class App extends Component {
 	};
 
 	// toggle votes for individual US State
-	toggleMapClick = usState => {
-		const newElectionResults = this.state.mapData;
+	toggleMapVotes = usState => {
+		const newElectionResults = [...this.state.mapData];
 
 		newElectionResults.map(state => {
 			if (state === usState) {
 				if (usState.properties['WINNER'] === 1) {
 					usState.properties['WINNER'] = 0;
-					this.candidateVotes();
 				} else {
 					usState.properties['WINNER'] = 1;
-					this.candidateVotes();
 				}
 				return newElectionResults;
 			}
 		});
 
-		this.setState({
-			mapData: newElectionResults,
-		});
+		this.setState(
+			{
+				mapData: newElectionResults,
+			},
+			this.tallyCandidateVotes
+		);
 	};
 
+	// simple way to generate winner of a US State
 	randomNum = () => {
 		const vote = Math.floor(Math.random() * 2);
 		return vote;
@@ -66,8 +68,8 @@ class App extends Component {
 
 	// give each US State electoral votes
 	// and a random number to indicate winner
-	updateVote = () => {
-		let newMapData = this.state.mapData;
+	generateRandomMap = () => {
+		let newMapData = [...this.state.mapData];
 
 		newMapData.map(state =>
 			this.state.voteData.map(vote => {
@@ -79,16 +81,16 @@ class App extends Component {
 			})
 		);
 
-		this.setState({
-			mapData: newMapData,
-		});
-
-		this.candidateVotes(); // will this have most recent data?
+		this.setState(
+			{
+				mapData: newMapData,
+			},
+			this.tallyCandidateVotes
+		);
 	};
 
-	candidateVotes = () => {
-		// totalVotesAvailable = 538
-		// totalVotesWinner = 270
+	tallyCandidateVotes = () => {
+		// totalVotesAvailable = 538, totalVotesWinner = 270
 
 		let candiateOneSum = this.state.mapData
 			.filter(allVotes => allVotes.properties['WINNER'] === 0)
@@ -125,12 +127,12 @@ class App extends Component {
 						coords={mapData}
 						svgHeight={height}
 						svgWidth={width}
-						toggleMapClick={this.toggleMapClick}
+						toggleMapVotes={this.toggleMapVotes}
 						stateCoords={usStateInfo}
 					/>
 				</div>
 				<div>
-					<button onClick={this.updateVote}>Simulator</button>
+					<button onClick={this.generateRandomMap}>Simulator</button>
 				</div>
 				<VoteResults blue={candiateOneVote} red={candiateTwoVote} />
 			</div>
