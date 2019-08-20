@@ -12,9 +12,9 @@ class App extends Component {
 			width: 1000,
 			mapData: [],
 			voteData: [],
-			candidateOneVotes: 0,
-			candidateTwoVotes: 0,
-			battleGround: 0,
+			candidateOneVotes: 0, // blue color
+			candidateTwoVotes: 0, // red color
+			battleGroundVotes: 0,
 		}; // mucho estado...que el redux?
 	}
 
@@ -64,7 +64,7 @@ class App extends Component {
 
 	// simple way to generate winner of a US State
 	generateRandomVotes = () => {
-		// match US State colors to a generated number
+		// match votes to the generated number
 		const stateColors = {
 			0: 'undecided',
 			1: 'redState',
@@ -130,7 +130,7 @@ class App extends Component {
 			(this.state.candidateOneVotes + this.state.candidateTwoVotes);
 
 		this.setState({
-			battleGround: undecidedVotes,
+			battleGroundVotes: undecidedVotes,
 		});
 	};
 
@@ -139,31 +139,49 @@ class App extends Component {
 			height,
 			width,
 			mapData,
-			usStateInfo,
 			candidateOneVotes,
 			candidateTwoVotes,
-			battleGround,
+			battleGroundVotes,
 		} = this.state;
 
 		return (
-			<div>
+			<div className="app">
 				<div>
 					<DisplayMap
 						coords={mapData}
 						svgHeight={height}
 						svgWidth={width}
 						toggleMapVotes={this.toggleMapVotes}
-						stateCoords={usStateInfo}
 					/>
+					<div>
+						<button onClick={this.generateRandomMap}>Simulator</button>
+					</div>
 				</div>
-				<div>
-					<button onClick={this.generateRandomMap}>Simulator</button>
-				</div>
+
 				<VoteResults
 					blue={candidateOneVotes}
 					red={candidateTwoVotes}
-					undecided={battleGround}
+					undecided={battleGroundVotes}
 				/>
+				{/* <div>
+					<button onClick={this.generateRandomMap}>Simulator</button>
+				</div> */}
+				<style jsx>{`
+					.app {
+						display: flex;
+						border: 2px solid black;
+					}
+					button {
+						width: 100px;
+						height: 50px;
+						background-color: #4caf50;
+						font-size: 20px;
+						color: white;
+					}
+					button:hover {
+						background-color: #006400;
+					}
+				`}</style>
 			</div>
 		);
 	}

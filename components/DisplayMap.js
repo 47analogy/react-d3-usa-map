@@ -8,7 +8,7 @@ const DisplayMap = props => {
 	};
 
 	return (
-		<div>
+		<div className="map">
 			<svg width={svgWidth} height={svgHeight}>
 				<g className="states">
 					{coords.map((d, i) => (
@@ -29,6 +29,11 @@ const DisplayMap = props => {
 					))}
 				</g>
 			</svg>
+			<style jsx>{`
+				.map {
+					display: flex;
+				}
+			`}</style>
 		</div>
 	);
 };
