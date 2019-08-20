@@ -30,8 +30,8 @@ const DisplayMap = props => {
 				</g>
 			</svg>
 			<style jsx>{`
-				.map {
-					display: flex;
+				g {
+					cursor: pointer;
 				}
 			`}</style>
 		</div>

@@ -22,11 +22,13 @@ const VoteResults = props => {
 					flex-direction: column;
 				}
 				.candidates {
-					width: 200px;
+					width: 225px;
 					height: 100px;
+					padding: 10px;
 					background: #fafafa;
 					border: 1px solid black;
-					text-align: center;
+					text-align: left;
+					font-size: 20px;
 				}
 				.candidates:hover {
 					box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);

@@ -154,7 +154,7 @@ class App extends Component {
 						toggleMapVotes={this.toggleMapVotes}
 					/>
 					<div>
-						<button onClick={this.generateRandomMap}>Simulator</button>
+						<button onClick={this.generateRandomMap}>Simulate Votes</button>
 					</div>
 				</div>
 
