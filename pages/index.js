@@ -164,9 +164,6 @@ class App extends Component {
 					red={candidateTwoVotes}
 					undecided={battleGroundVotes}
 				/>
-				{/* <div>
-					<button onClick={this.generateRandomMap}>Simulator</button>
-				</div> */}
 				<style jsx>{`
 					.app {
 						display: flex;
