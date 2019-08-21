@@ -22,7 +22,7 @@ const DisplayMap = props => {
 									? '#F4CB43' // gold
 									: d.properties.WINNER === 'redState'
 									? '#EB4C50' // red
-									: '#1A9AF2' // blue
+									: '#1A9AF2' // blue g
 							}
 							stroke={'#000000'}
 						/>

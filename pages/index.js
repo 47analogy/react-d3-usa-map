@@ -42,12 +42,13 @@ class App extends Component {
 	toggleMapVotes = usState => {
 		const newElectionResults = [...this.state.mapData];
 
-		// TODO: FUNCTIONALITY FOR UNDECIDED VOTES
 		newElectionResults.map(state => {
 			if (state === usState) {
 				if (usState.properties['WINNER'] === 'redState') {
 					usState.properties['WINNER'] = 'blueState';
-				} else {
+				} else if (usState.properties['WINNER'] === 'blueState') {
+					usState.properties['WINNER'] = 'undecided';
+				} else if (usState.properties['WINNER'] === 'undecided') {
 					usState.properties['WINNER'] = 'redState';
 				}
 				return newElectionResults;
